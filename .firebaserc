@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "pariscaldev",
+    "prod": "pariscalprod"
+  }
+}
