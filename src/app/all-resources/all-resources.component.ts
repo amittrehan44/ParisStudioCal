@@ -247,7 +247,9 @@ export const colors: any = {
 })
 export class AllResourcesComponent implements OnInit, OnChanges  {
     view: string = 'day';
-   _viewDate: Date = new Date();
+   //_viewDate: Date = new Date();
+   //Updated below to route on day click
+   _viewDate: Date;
     get viewDate(): Date {
         return this._viewDate
     }
@@ -306,7 +308,9 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
     todaysNotes: String;
     selectedNote: DayNotes;
 
-    constructor(public _caleventService: CalEventsService, public auth: AuthService, public modal: NgbModal) {  }
+    constructor(public _caleventService: CalEventsService, 
+                public auth: AuthService, 
+                public modal: NgbModal) {  }
 
     ngOnInit() {
 
@@ -373,6 +377,8 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
             console.log(this._caleventService.selectedNote);
         });
 
+        // Updated this to implement routing on moth day click
+        this.viewDate = this._caleventService.clickedDate;
     }
 
 
@@ -743,8 +749,10 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
         }
          /* for date with single digits (1-9) */
          else if (this.allDayNotes[i].day.toString().substring(9, 10) == val.getDate().toString() && this.allDayNotes[i].day.toString().substring(4, 7) == this.monthNames[val.getMonth()] && this.allDayNotes[i].day.toString().substring(11, 15) == val.getFullYear().toString()) {
-            this.todaysNotes = this.allDayNotes[i].notes;
-            this.selectedNote = this.allDayNotes[i];
+            if(this.allDayNotes[i].day.toString().substring(8, 9) == "0"){ 
+                this.todaysNotes = this.allDayNotes[i].notes;
+                this.selectedNote = this.allDayNotes[i];
+            }
         }
     }
     

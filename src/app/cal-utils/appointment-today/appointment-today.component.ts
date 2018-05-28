@@ -50,7 +50,8 @@ export class AppointmentTodayComponent implements OnInit {
                 }
                 /* for date with single digits (1-9) */
                 else if (this.dummy.substring(9, 10) == this.today.getDate().toString() && this.dummy.substring(4, 7) == this.monthNames[this.today.getMonth()] && this.dummy.substring(11, 15) == this.today.getFullYear().toString()) {
-                    this.todaysAppointment.push(y as eventsAPI);
+                    if(this.dummy.substring(8, 9) == "0")
+                        this.todaysAppointment.push(y as eventsAPI);
                 }
             });
             
