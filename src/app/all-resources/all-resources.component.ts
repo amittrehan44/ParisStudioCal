@@ -282,6 +282,9 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
     _tempMins: number;
     _tempMinsStr: string;
 
+    //loading spinner
+    showSpinner: boolean = true;
+
 
 
     /*   events: CalendarEvent[] = []; */
@@ -332,7 +335,7 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
             //            this.loadevents();
 
         });
-
+        x.snapshotChanges().subscribe(() => this.showSpinner = false);
 
         //get all day notes
         var z = this._caleventService.getFirebaseDayNotesData();
@@ -367,8 +370,10 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
                 }
                 /* for date with single digits (1-9) */
                 else if (dummy.substring(9, 10) == this.viewDate.getDate().toString() && dummy.substring(4, 7) == this.monthNames[this.viewDate.getMonth()] && dummy.substring(11, 15) == this.viewDate.getFullYear().toString()) {
+                    if(dummy.substring(8, 9) == "0"){
                     this.todaysNotes = y["notes"];
                     this.selectedNote = y as DayNotes;
+                    }
                 }
             });
             console.log(this.allDayNotes);

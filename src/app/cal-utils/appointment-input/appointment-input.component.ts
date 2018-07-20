@@ -158,7 +158,7 @@ export class AppointmentInputComponent implements OnInit {
             case 17:
                 return 45;
             case 18:
-                return 0;            
+                return 15;            
         }
 
         return 0;

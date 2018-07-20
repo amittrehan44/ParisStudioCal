@@ -22,6 +22,7 @@ import { Services } from './services.model';
 import { ChartsComponent } from './charts/charts.component';
 import { ChartsModule as Ng2Charts } from 'ng2-charts';
 import { ResourcesComponent } from './resources/resources.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 
 @NgModule({
@@ -41,7 +42,7 @@ import { ResourcesComponent } from './resources/resources.component';
       MultiselectDropdownModule,
       Ng2Charts
   ],
-  declarations: [DateTimePickerComponent, CalendarHeaderComponent, CalContextmenuComponent, AppointmentInputComponent, AppointmentListComponent, AppointmentTodayComponent, NavbarComponent, ChartsComponent, ResourcesComponent],
-    exports: [CalendarHeaderComponent, DateTimePickerComponent, CalContextmenuComponent, ContextMenuModule, AppointmentInputComponent, AppointmentListComponent, AppointmentTodayComponent, NavbarComponent, ResourcesComponent ]
+  declarations: [DateTimePickerComponent, CalendarHeaderComponent, CalContextmenuComponent, AppointmentInputComponent, AppointmentListComponent, AppointmentTodayComponent, NavbarComponent, ChartsComponent, ResourcesComponent, LoadingSpinnerComponent],
+    exports: [CalendarHeaderComponent, DateTimePickerComponent, CalContextmenuComponent, ContextMenuModule, AppointmentInputComponent, AppointmentListComponent, AppointmentTodayComponent, NavbarComponent, ResourcesComponent, LoadingSpinnerComponent ]
 })
 export class CalUtilsModule { }

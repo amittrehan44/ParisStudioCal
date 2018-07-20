@@ -151,20 +151,14 @@ const ref = admin.database().ref()
 exports.dailySMSReminder = functions.https.onRequest((req, res) => {
     var currentDate = new Date()
     // change time in PST
-    //Daylight Saving Changes
-	////for PST nov to march - 8 and for PDT mar to nov -7
-   // currentDate.setHours(currentDate.getHours() - 7)
+    currentDate.setHours(currentDate.getHours() - 8)
 
-    //Add number of hours to the point when client wants to send reminders
-    // Example if at 6PM then and 6 or more hours to current date to make it next day
-
-    //New Logic: google the UTC time and sdd number of hours to make next day from client requirement
-    // Example if client ask to set reminder at 6PM PST = 1AM UTC(next day) 
-    //so date is already changed still I will add 4 hrs to make sure
-    currentDate.setHours(currentDate.getHours() + 4)
+    //Add number of hours to change date or to the point when client wants to send reminders
+    // Example if at 6PM then and 6 hours to current date to make it next date
+    currentDate.setHours(currentDate.getHours() + 14)
     const getDate = currentDate.toDateString();
 
-    const names = []
+    // const names = []
 
     ref.child('appointments').once('value')
     .then(snap => {
@@ -175,7 +169,7 @@ exports.dailySMSReminder = functions.https.onRequest((req, res) => {
             // change time in PST
 			//Daylight Saving Changes
 			////for PST nov to march - 8 and for PDT mar to nov -7
-            //date.setHours(date.getHours() - 7)
+            date.setHours(date.getHours() - 8)
             const getStartDate = date.toDateString()
 
           

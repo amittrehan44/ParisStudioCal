@@ -155,7 +155,8 @@ export class MyCalendarComponent implements OnInit {
     _tempMins: number;
     _tempMinsStr: string;
 
-    
+    //loading spinner
+    showSpinner: boolean = true;
 
     constructor(public modal: NgbModal, 
                 public _caleventService: CalEventsService, 
@@ -432,7 +433,7 @@ export class MyCalendarComponent implements OnInit {
             
         });
 
-
+        x.snapshotChanges().subscribe(() => this.showSpinner = false);
     }
 
     public sortByDate(): void {
