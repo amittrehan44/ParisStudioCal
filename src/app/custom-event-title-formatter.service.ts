@@ -6,6 +6,8 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
         super();
     }
 
+
+
     // you can override any of the methods defined in the parent class
 
     month(event: CalendarEvent): string {
@@ -29,6 +31,10 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
     // }
 
     day(event: CalendarEvent): string {
+        var nameLower = event.meta.name.toLowerCase();
+        var name = nameLower.charAt(0).toUpperCase() + nameLower.substr(1);
+
+        var title = event.title.charAt(0).toUpperCase() + event.title.substr(1);
         return `<b>${new Intl.DateTimeFormat(this.locale, {
             hour: 'numeric',
             minute: 'numeric'
@@ -36,7 +42,7 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
             hour: 'numeric',
             minute: 'numeric'
         }).format(event.end)}</b><br> 
-        ${event.meta.name} : ${event.title}<br>
+        ${name} : ${title}<br>
         ${event.meta.service}  `;
     }
 }

@@ -41,11 +41,12 @@
             <label>Full Name</label>
             <input class="form-control" name="name" #name="ngModel" [(ngModel)]="_caleventService.selectedAppointment.name" placeholder="Full Name" required>
         </div>
-        <div class="form-group col-md-6">
+        <!-- <div class="form-group col-md-6">
             <label>Landline</label>
             <input class="form-control" placeholder="+1 (xxx) xxx-xxxx" [textMask]="{mask: mask}" name="landline" #phone="ngModel" [(ngModel)]="_caleventService.selectedAppointment.landline" pattern="\+\d\d{10}"/>
             
-        </div>
+        </div> -->
+        <input type="hidden" class="form-control" placeholder="+1 (xxx) xxx-xxxx" [textMask]="{mask: mask}" name="landline" #phone="ngModel" [(ngModel)]="_caleventService.selectedAppointment.landline" pattern="\+\d\d{10}"/>
     </div>
 
   

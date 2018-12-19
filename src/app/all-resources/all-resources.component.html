@@ -99,6 +99,20 @@
 <!--Calander Header Starts with Next and Previous-->
 <div class="calHead row text-center col-md-12">
     <div class="col-md-4">
+
+        <div class="btn-group" style="margin-bottom: 10px;">
+                <div class="btn btn-primary"
+                         (click)="view = 'month'"
+                         [class.active]="view === 'month'">
+                        Month
+                </div>
+                <div class="btn btn-primary"
+                         (click)="view = 'day'"
+                         [class.active]="view === 'day'">
+                        Resources
+                </div>
+        </div>
+
         <div class="row text-center" style="margin-bottom: 10px;">
             <div class="col-md-12">
                 <div class="btn-group">
@@ -125,9 +139,9 @@
                 </div>
             </div>
             <div class="col-md-12">
-                <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+                <!-- <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3> -->
                 <div class="wrapper">
-                    <button class="btn btn-primary" (click)="open(modalAppointmentForm)">Add Appointment</button>
+                    <button class="btn btn-primary btn-sm" (click)="open(modalAppointmentForm)">Add Appointment</button>
                 </div>
             </div>
 
@@ -145,12 +159,13 @@
             <button class="btn btn-primary" (click)="open(modalDayNotesForm)">Add Notes</button>
             <!--  -->
         </div>
-
+        <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
     </div>
 </div>
 
-<div class="head2">
-    <my-calendar-day-view   [viewDate]="viewDate"
+<div [ngSwitch]="view" class="head2">
+    <my-calendar-day-view   *ngSwitchCase="'day'"
+                            [viewDate]="viewDate"
                             [events]="events"
                             [eventWidth]="120"
                             [refresh]="refresh"
@@ -161,4 +176,16 @@
                             [dayEndHour]="21"
                             [hourSegmentTemplate]="dayHourSegmentTemplate">
     </my-calendar-day-view>
+
+    <mwl-calendar-month-view *ngSwitchCase="'month'"
+                                     [viewDate]="viewDate"
+                                     [events]="events"
+                                     [refresh]="refresh"
+                                     [activeDayIsOpen]="activeDayIsOpen"
+                                     (dayClicked)="dayClicked($event.day, viewDate = $event.day.date);"
+                                     (eventClicked)="handleEvent('Clicked', $event.event)"
+                                     (eventTimesChanged)="eventTimesChanged($event)"
+                                     [cellTemplate]="monthCellTemplate"
+                                     (beforeViewRender)="beforeMonthViewRender($event)">
+    </mwl-calendar-month-view>
 </div>

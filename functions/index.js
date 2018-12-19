@@ -93,7 +93,7 @@ exports.createAppointment = functions.database
        });
 
 //send sms on update start time
-exports.textStatus = functions.database
+exports.onUpdateAppointment = functions.database
        .ref('/appointments/{key}/start')
        .onUpdate(event => {
            const orderKey = event.params.key
@@ -122,6 +122,87 @@ exports.textStatus = functions.database
                        })
                        
        });
+
+
+ //OnDelete
+ 
+ //Send SMS on create of start time or create of new appointment
+exports.onDeleteAppointment = functions.database
+.ref('/appointments/{key}')
+.onDelete(event => {
+    const orderKey = event.params.key
+    var before = event.data.previous.val();
+    var name = before.name;
+    var phoneNumber = before.phone;
+    var service = before.service;
+    var chair = before.chair;
+    var start = DisplayCurrentTime(before.start)
+    var copy = []
+    // console.log(orderKey);
+    // console.log(name);
+    // console.log(phoneNumber);
+    // console.log(start);
+    // console.log(chair);
+    // console.log(service);
+    // console.log(service.length);
+    // console.log(service[0]["name"]);
+    //console.log("*********");
+    for(let i=0; i<service.length; i++){
+        copy.push(service[i]["name"])
+    }
+    var allServices = copy.join();
+   
+    
+    const textMessage = {
+                            //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+                            body: `Appointment deleted for ${name} on ${start} phone: ${phoneNumber} Service: ${allServices}   - Paris Studio`,
+                            to: +17787792744,
+                            //to: phoneNumber,  // Text to this number
+                            from: twilioNumber // From a valid Twilio number
+                        }
+                        console.log('Delete Appointment: Sending messge to Amit for ' + name + ' on phone number ' + phoneNumber + ' on ' + start + ' phone ' +phoneNumber+ ' service: ' + allServices )
+                         client.messages.create(textMessage).then(message => console.log(message.sid, 'success'))
+                                                                  .catch(err => console.log(err))
+
+    
+    const textMessage2 = {
+                            //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+                            body: `Appointment deleted for ${name} on ${start} phone: ${phoneNumber} Service: ${allServices}   - Paris Studio`,
+                            to: +16043077549,
+                            //to: phoneNumber,  // Text to this number
+                            from: twilioNumber // From a valid Twilio number
+                        }
+                        console.log('Delete Appointment: Sending messge to Bunty for ' + name + ' on phone number ' + phoneNumber + ' on ' + start + ' phone ' +phoneNumber+ ' service: ' + allServices )
+                       return client.messages.create(textMessage2).then(message => console.log(message.sid, 'success'))
+                                                                                                          .catch(err => console.log(err))                                                              
+    
+    
+
+    // return admin.database()
+    //             .ref(`/appointments/${orderKey}`)
+    //             .once('value')
+    //             .then(snapshot => snapshot.val())
+    //             .then(appointment => {
+    //                 const name = appointment.name
+    //                 const start = DisplayCurrentTime(appointment.start)
+    //                 const phoneNumber = appointment.phone
+    //                 if (!validE164(phoneNumber)) {
+    //                     throw new Error('number must be E164 format!')
+    //                 }
+    //                 const textMessage = {
+    //                     //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+    //                     body: `Appointment deleted for ${name} on ${start} - Paris Studio`,
+    //                     to: +17787792744,
+    //                     //to: phoneNumber,  // Text to this number
+    //                     from: twilioNumber // From a valid Twilio number
+    //                 }
+    //                 console.log('Sending messge to' + name + 'on phone number' + phoneNumber + 'on ' + start )
+    //                  return client.messages.create(textMessage).then(message => console.log(message.sid, 'success'))
+    //                                                           .catch(err => console.log(err))
+                   
+    //             })
+                
+});
 
 const ref = admin.database().ref()
 //send sms daily at 6PM
@@ -252,3 +333,109 @@ function DisplayCurrentTime(date1) {
     return time;
 }
 
+
+//send sms on update to Bunty and Amit
+exports.buntyUpdateAppointment = functions.database
+       .ref('/appointments/{key}')
+       .onUpdate(event => {
+           const orderKey = event.params.key
+           var before = event.data.previous.val();
+           var after = event.data.val();
+
+           const newName = after.name
+           const oldName = before.name
+
+           const newPhone = after.phone
+           const oldPhone = before.phone
+
+            const newStart =  DisplayCurrentTime(after.start)
+            const oldStart =  DisplayCurrentTime(before.start)
+
+            const newChair = after.chair
+            const oldChair = before.chair
+
+            const newService = getServicesJoin(after.service);
+            const oldService = getServicesJoin(before.service);
+
+            
+
+            const textMessage = {
+                //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+                body: `Appointment Updated: OldValues: ${oldName}(${oldPhone}) on ${oldStart} Service: ${oldService}  To NewValue: ${newName}(${newPhone}) on ${newStart} Service: ${newService}`,
+                to: +17787792744,
+                //to: phoneNumber,  // Text to this number
+                from: twilioNumber // From a valid Twilio number
+            }
+            console.log('Appointment updated for ' + oldName + ' on phone number ' + oldPhone + ' on ' + oldStart + ' service: ' + oldService + ' To NewValue ' + newName + ' on phone number ' + newPhone + ' on ' + newStart + ' service: ' + newService )
+             client.messages.create(textMessage).then(message => console.log(message.sid, 'success'))
+                                                      .catch(err => console.log(err))
+
+
+            const textMessage2 = {
+                //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+                body: `Appointment Updated: OldValues: ${oldName}(${oldPhone}) on ${oldStart} Service: ${oldService}  To NewValue: ${newName}(${newPhone}) on ${newStart} Service: ${newService}`,
+                to: +16043077549,
+                //to: phoneNumber,  // Text to this number
+                from: twilioNumber // From a valid Twilio number
+            }
+            console.log('Appointment updated for ' + oldName + ' on phone number ' + oldPhone + ' on ' + oldStart + ' service: ' + oldService + ' To NewValue ' + newName + ' on phone number ' + newPhone + ' on ' + newStart + ' service: ' + newService )
+           return client.messages.create(textMessage2).then(message => console.log(message.sid, 'success'))
+                                                                                              .catch(err => console.log(err))                                                              
+
+        
+                       
+       });
+
+       //send sms on create to Bunty and Amit
+       //Send SMS on create of start time or create of new appointment
+exports.buntyCreateAppointment = functions.database
+.ref('/appointments/{key}/start')
+.onCreate(event => {
+    const orderKey = event.params.key
+    return admin.database()
+                .ref(`/appointments/${orderKey}`)
+                .once('value')
+                .then(snapshot => snapshot.val())
+                .then(appointment => {
+                    const name = appointment.name
+                    const start = DisplayCurrentTime(appointment.start)
+                    const phoneNumber = appointment.phone
+                    const service = getServicesJoin(appointment.service);
+                    // if (!validE164(phoneNumber)) {
+                    //     throw new Error('number must be E164 format!')
+                    // }
+                    const textMessage = {
+                        //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+                        body: `Appointment Created for ${name}(${phoneNumber}) on ${start} service: ${service} - Paris Studio`,
+                        to: +17787792744,
+                        //to: phoneNumber,  // Text to this number
+                        from: twilioNumber // From a valid Twilio number
+                    }
+                    console.log('Sending messge to Amit for: ' + name + ' on phone number: ' + phoneNumber + ' on ' + start + 'service: ' + service )
+                    client.messages.create(textMessage).then(message => console.log(message.sid, 'success'))
+                                                              .catch(err => console.log(err))
+                   
+
+                    const textMessage2 = {
+                        //body: `Hello ${name}, you have an Appointment on ${start} - Saddhers`,
+                        body: `Appointment Created for ${name}(${phoneNumber}) on ${start} service: ${service} - Paris Studio`,
+                        to: +16043077549,
+                        //to: phoneNumber,  // Text to this number
+                        from: twilioNumber // From a valid Twilio number
+                    }
+                    console.log('Sending messge to Bunty for: ' + name + ' on phone number: ' + phoneNumber + ' on ' + start + 'service: ' + service )
+                    return client.messages.create(textMessage2).then(message => console.log(message.sid, 'success'))
+                                                                                                      .catch(err => console.log(err))
+
+                })
+                
+});
+
+
+    function getServicesJoin(servicesObj) {
+        var copy = [];
+        for(let i=0; i<servicesObj.length; i++){
+            copy.push(servicesObj[i]["name"])
+        }
+        return copy.join();
+    }

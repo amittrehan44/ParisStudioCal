@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ViewChild, TemplateRef, OnChanges } from '@angular/core';
-import { CalendarEvent, CalendarUtils, CalendarDayViewComponent } from 'angular-calendar';
+import { CalendarEvent, CalendarUtils, CalendarDayViewComponent, CalendarMonthViewDay } from 'angular-calendar';
 
 import { Subject } from 'rxjs/Subject';
 import {
@@ -329,11 +329,11 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
                 
             });
             console.log(this.filteredEvents);
-            this.sortByDate();
+            //this.sortByDate();
             this.loadServices();
             //call load events in load services
             //            this.loadevents();
-
+            
         });
         x.snapshotChanges().subscribe(() => this.showSpinner = false);
 
@@ -457,10 +457,11 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
         //this.eventServiceIDs = [];
 
         for (var i: number = 0; i < this.filteredEvents.length; i++) {
-
+            
             //get all services in new array from firebase
             var z = this._caleventService.getFirebaseServiceData(this.filteredEvents[i].$key);
             var eventServiceJoin: string;
+            
             z.snapshotChanges().subscribe(item => {
                 this.eventService = [];
                 this.evenServicesName = [];
@@ -476,7 +477,8 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
                     this.serviceIds.push(y["id"]);
                     //console.log(y["name"]);
                 });
-                //                console.log(this.evenServicesName.join());
+                
+                //console.log(this.evenServicesName.join());
                 eventServiceJoin = this.evenServicesName.join();
                 this.eventServiceJoin1.push(eventServiceJoin);
 
@@ -517,6 +519,9 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
         const eventService: string[] = [];
         this.events = [];
         if (this.eventServiceJoin1.length == this.filteredEvents.length) {
+            console.log(this.eventServiceJoin1.length);
+            console.log(this.filteredEvents.length);
+            
             for (var i: number = 0; i < this.eventServiceJoin1.length; i++) {
 
                 //Select Color as per stylist & Load the Resources
@@ -573,12 +578,12 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
                                this.eventServiceJoin = this.evenServicesName.join();
                            });
                
-                
+                 
 
                 console.log(i);
                 console.log(this.filteredEvents[i].name);
                 console.log(this.eventServiceJoin1[i]);
- */
+*/
 
                 var l = this.getChair(this.filteredEvents[i].chair);
                 this.events.push({
@@ -609,10 +614,14 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
                     }
                 });
                 this.refresh.next();
+                //console.log(i);
+                //console.log(this.events[i]);
+
 
 
 
             };
+            console.log(this.events);
         }
         
     }
@@ -765,6 +774,35 @@ export class AllResourcesComponent implements OnInit, OnChanges  {
         console.log(this.selectedNote);
 
   }
+
+
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (isSameMonth(date, this.viewDate)) {
+        if (
+            (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+            events.length === 0
+        ) {
+            this.activeDayIsOpen = false;
+        } else {
+            this.activeDayIsOpen = true;
+            this.viewDate = date;
+        }
+    }
+   
+    this.view= 'day';
+}
+
+//Group events in Month view 
+beforeMonthViewRender({ body }: { body: CalendarMonthViewDay[] }): void {
+    body.forEach(cell => {
+        const groups: any = {};
+        cell.events.forEach((event: CalendarEvent<{ type: string }>) => {
+            groups[event.meta.type] = groups[event.meta.type] || [];
+            groups[event.meta.type].push(event);
+        });
+        cell['eventGroups'] = Object.entries(groups);
+    });
+}
 
 
 }
